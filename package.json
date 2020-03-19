@@ -1,0 +1,19 @@
+{
+  "name": "zopfli-recompressor",
+  "version": "1.0.0",
+  "description": "A simple script recompressing all zip files recursively in a directory structure using the zopfli algorithm.",
+  "main": "src/bin/zopfli-recompress.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "zopfli",
+    "script",
+    "cli",
+    "compression",
+    "zip",
+    "gzip"
+  ],
+  "author": "Jakob Westhoff <jakob@westhoffswelt.de> (http://westhoffswelt.de)",
+  "license": "MIT"
+}
