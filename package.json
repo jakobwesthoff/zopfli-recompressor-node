@@ -5,7 +5,12 @@
   "main": "src/bin/zopfli-recompress.ts",
   "scripts": {
     "prettier": "eslint --ext js,ts . --fix",
-    "lint": "eslint --ext js,ts ."
+    "lint": "eslint --ext js,ts .",
+    "clean": "rimraf 'dist/**/*'",
+    "build": "npm-run-all build:linux build:windows build:macos",
+    "build:linux": "nexe --i 'src/bin/zopfli-recompress' -o 'dist/bin/zopfli-recompress-linux' -t 'static-x86-12.9.1'",
+    "build:windows": "nexe --i 'src/bin/zopfli-recompress' -o 'dist/bin/zopfli-recompress-windows' -t 'windows-x64-12.13.1'",
+    "build:macos": "nexe --i 'src/bin/zopfli-recompress' -o 'dist/bin/zopfli-recompress-macos' -t 'mac-x64-12.13.1'"
   },
   "keywords": [
     "zopfli",
@@ -25,6 +30,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "nexe": "^3.3.2",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   },
