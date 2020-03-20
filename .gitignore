@@ -7,6 +7,9 @@
 !.vscode/extensions.json
 *.code-workspace
 
+# Binaries
+bin/*
+
 # Logs
 *.log
 npm-debug.log*
