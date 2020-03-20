@@ -1,6 +1,6 @@
 {
   "name": "zopfli-recompressor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple script recompressing all zip files recursively in a directory structure using the zopfli algorithm.",
   "main": "src/bin/zopfli-recompress.ts",
   "scripts": {
