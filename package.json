@@ -15,5 +15,16 @@
     "gzip"
   ],
   "author": "Jakob Westhoff <jakob@westhoffswelt.de> (http://westhoffswelt.de)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.9.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
+    "nexe": "^3.3.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.3"
+  }
 }
