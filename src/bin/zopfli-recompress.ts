@@ -5,6 +5,8 @@ import os from 'os';
 import { ProgressLog } from '../ProgressLog';
 import * as fse from 'fs-extra';
 import * as path from 'path';
+import which from 'which';
+import { exists, isExecutable } from '../FileAccess';
 
 const cli = meow(
   `
@@ -61,7 +63,40 @@ if (cli.input.length !== 1) {
 (async () => {
   const processList = new ProcessList();
   const progressLog = new ProgressLog(cli.flags.log);
-  const recompressor = new Recompressor(processList, progressLog, cli.input[0], { ...cli.flags });
 
+  let advzip: string;
+  if (cli.flags.advzip.match(/\/|\\/) === null) {
+    const name = cli.flags.advzip;
+    // Locate the advzip executable
+    try {
+      advzip = await which(name, { path: process.cwd() });
+    } catch (e) {
+      try {
+        advzip = await which(name, { path: __dirname });
+      } catch (e) {
+        try {
+          advzip = await which(name, { path: path.dirname(process.execPath) });
+        } catch (e) {
+          try {
+            advzip = await which(name);
+          } catch (e) {
+            processList.logError(`Could not locate '${name}' executable on your system.`);
+            process.exit(42);
+          }
+        }
+      }
+    }
+  } else {
+    advzip = cli.flags.advzip;
+    if (!(await exists(advzip))) {
+      processList.logError(`The specified advzip executable '${advzip}' could not be found.`);
+      process.exit(42);
+    } else if (!(await isExecutable(advzip))) {
+      processList.logError(`The specified advzip executable '${advzip}' does exist, but is not executable.`);
+      process.exit(42);
+    }
+  }
+
+  const recompressor = new Recompressor(processList, progressLog, cli.input[0], { ...cli.flags, advzip });
   await recompressor.run();
 })();
