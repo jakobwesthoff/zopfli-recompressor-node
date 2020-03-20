@@ -4,7 +4,8 @@
   "description": "A simple script recompressing all zip files recursively in a directory structure using the zopfli algorithm.",
   "main": "src/bin/zopfli-recompress.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier": "eslint --ext js,ts . --fix",
+    "lint": "eslint --ext js,ts ."
   },
   "keywords": [
     "zopfli",
