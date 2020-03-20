@@ -6,11 +6,12 @@
   "scripts": {
     "prettier": "eslint --ext js,ts . --fix",
     "lint": "eslint --ext js,ts .",
-    "clean": "rimraf 'dist/**/*'",
-    "build": "npm-run-all build:linux build:windows build:macos",
-    "build:linux": "nexe --i 'src/bin/zopfli-recompress' -o 'dist/bin/zopfli-recompress-linux' -t 'static-x86-12.9.1'",
-    "build:windows": "nexe --i 'src/bin/zopfli-recompress' -o 'dist/bin/zopfli-recompress-windows' -t 'windows-x64-12.13.1'",
-    "build:macos": "nexe --i 'src/bin/zopfli-recompress' -o 'dist/bin/zopfli-recompress-macos' -t 'mac-x64-12.13.1'"
+    "clean": "rimraf 'dist/**/*'; rimraf 'bin/**/*'",
+    "build": "npm-run-all build:typescript -s build:linux build:windows build:macos",
+    "build:typescript": "tsc -p tsconfig.json",
+    "build:linux": "nexe --i 'dist/bin/zopfli-recompress' -o 'bin/zopfli-recompress-linux' -t 'static-x86-12.9.1'",
+    "build:windows": "nexe --i 'dist/bin/zopfli-recompress' -o 'bin/zopfli-recompress-windows' -t 'windows-x64-12.13.1'",
+    "build:macos": "nexe --i 'dist/bin/zopfli-recompress' -o 'bin/zopfli-recompress-macos' -t 'mac-x64-12.13.1'"
   },
   "keywords": [
     "zopfli",
@@ -23,6 +24,8 @@
   "author": "Jakob Westhoff <jakob@westhoffswelt.de> (http://westhoffswelt.de)",
   "license": "MIT",
   "devDependencies": {
+    "@types/async": "^3.0.8",
+    "@types/glob": "^7.1.1",
     "@types/node": "^13.9.2",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
@@ -47,7 +50,11 @@
     "*.{js,jsx,ts,tsx}": "eslint"
   },
   "dependencies": {
+    "async": "^3.2.0",
     "chalk": "^3.0.0",
+    "execa": "^4.0.0",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
     "log-symbols": "^3.0.0",
     "log-update": "^4.0.0",
     "meow": "^6.1.0",

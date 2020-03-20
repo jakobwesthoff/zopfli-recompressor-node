@@ -33,6 +33,13 @@ export class ProcessList {
     }
   }
 
+  public update(id: string, text: string): void {
+    const matches = this.processes.filter((candidate) => candidate.id === id);
+    for (const match of matches) {
+      match.text = text;
+    }
+  }
+
   public start(): void {
     this.runningTimeout = setInterval(() => this.render(), ProcessList.DELAY) as any;
   }
