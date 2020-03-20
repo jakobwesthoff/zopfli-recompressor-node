@@ -25,6 +25,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/async": "^3.0.8",
+    "@types/fs-extra": "^8.1.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^13.9.2",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
@@ -53,6 +54,7 @@
     "async": "^3.2.0",
     "chalk": "^3.0.0",
     "execa": "^4.0.0",
+    "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "log-symbols": "^3.0.0",

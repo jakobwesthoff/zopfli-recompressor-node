@@ -4,6 +4,7 @@ import glob from 'glob-promise';
 import path from 'path';
 import { ProcessList } from './ProcessList';
 import { padToLength } from './stringFormat';
+import { ProgressLog } from './ProgressLog';
 
 export interface ProcessorOptions {
   extension: string;
@@ -24,6 +25,7 @@ export class Recompressor {
 
   constructor(
     private processList: ProcessList,
+    private progressLog: ProgressLog,
     private path: string,
     options: ProcessorOptions = Recompressor.DEFAULT_OPTIONS,
   ) {
@@ -62,9 +64,14 @@ export class Recompressor {
 
       this.processList.add(file, `[${percentage}%] (${paddedIndex}/${files.length}) ${basefile}`);
 
-      const { command, args } = this.buildAdvZipCommandline(file);
-      await execa(command, args);
+      if (this.progressLog.hasBeenProcessed(file)) {
+        this.processList.skip(file);
+        return;
+      }
 
+      const { command, args } = this.buildAdvZipCommandline(file);
+      const { stdout } = await execa(command, args);
+      await this.progressLog.finished(file, stdout);
       this.processList.finish(file);
     });
   }

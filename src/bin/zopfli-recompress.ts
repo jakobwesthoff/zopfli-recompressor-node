@@ -2,6 +2,7 @@ import { ProcessList } from '../ProcessList';
 import { Recompressor } from '../Recompressor';
 import meow from 'meow';
 import os from 'os';
+import { ProgressLog } from '../ProgressLog';
 
 const cleanedArgv = process.argv.slice();
 cleanedArgv.splice(2, 1);
@@ -15,6 +16,8 @@ const cli = meow(
         --threads COUNT     Number of files to process simultanously (Default: number of processor cores)
         --iterations COUNT  Iteration count to use with advzip (Default: 1)
         --advzip            Name and/or path to advzip executable (Default: advzip)
+        --log FILEPATH      Path to a file used to track progress. Restarting with an already existing file
+                            will resume operations were they were left of.
 
   Other options:
     -h, --help         Show usage information
@@ -40,6 +43,9 @@ const cli = meow(
         type: 'string',
         default: 'advzip',
       },
+      log: {
+        type: 'string',
+      },
     },
     autoHelp: true,
     autoVersion: true,
@@ -54,7 +60,8 @@ if (cli.input.length !== 3) {
 
 (async () => {
   const processList = new ProcessList();
-  const recompressor = new Recompressor(processList, cli.input[2], { ...cli.flags });
+  const progressLog = new ProgressLog(cli.flags.log);
+  const recompressor = new Recompressor(processList, progressLog, cli.input[2], { ...cli.flags });
 
   await recompressor.run();
 })();

@@ -3,10 +3,16 @@ import logUpdate from 'log-update';
 import logSymbols from 'log-symbols';
 import chalk from 'chalk';
 
+enum ProcessState {
+  RUNNING,
+  FINISHED,
+  SKIPPED,
+}
+
 interface Process {
   id: string;
   text: string;
-  finished: boolean;
+  state: ProcessState;
 }
 
 export class ProcessList {
@@ -23,13 +29,20 @@ export class ProcessList {
   }
 
   public add(id: string, text: string): void {
-    this.processes.push({ id, text, finished: false });
+    this.processes.push({ id, text, state: ProcessState.RUNNING });
   }
 
   public finish(id: string): void {
     const matches = this.processes.filter((candidate) => candidate.id === id);
     for (const match of matches) {
-      match.finished = true;
+      match.state = ProcessState.FINISHED;
+    }
+  }
+
+  public skip(id: string): void {
+    const matches = this.processes.filter((candidate) => candidate.id === id);
+    for (const match of matches) {
+      match.state = ProcessState.SKIPPED;
     }
   }
 
@@ -67,10 +80,17 @@ export class ProcessList {
   private renderProcesses(processes: Process[], spinner: string): void {
     logUpdate(
       processes
-        .map(
-          (process: Process) =>
-            `${process.finished ? chalk.green(logSymbols.success) + ' ' : chalk.yellow(spinner)}${process.text}`,
-        )
+        .map((process: Process) => {
+          let symbol: string;
+          if (process.state === ProcessState.FINISHED) {
+            symbol = chalk.green(logSymbols.success) + ' ';
+          } else if (process.state === ProcessState.SKIPPED) {
+            symbol = chalk.yellow(logSymbols.success);
+          } else {
+            symbol = chalk.blue(spinner);
+          }
+          return `${symbol}${process.text}`;
+        })
         .join('\n'),
     );
   }
@@ -79,7 +99,7 @@ export class ProcessList {
     let splitPoint = 0;
 
     for (let i = 0; i < this.processes.length; i++) {
-      if (this.processes[i].finished === true) {
+      if (this.processes[i].state !== ProcessState.RUNNING) {
         splitPoint = i + 1;
       } else {
         break;
