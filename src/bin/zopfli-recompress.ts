@@ -23,7 +23,8 @@ const cli = meow(
     -h, --help         Show usage information
 
   Examples:
-    zopfli-recompress --extension adz --threads 4 /path/to/some/compressed/adf/images
+    $ zopfli-recompress --extension adz --threads 4 /path/to/some/compressed/adf/images
+    $ zopfli-recompress --threads 8 --log /path/to/resume.log /path/to/zip/files 
 `,
   {
     flags: {
