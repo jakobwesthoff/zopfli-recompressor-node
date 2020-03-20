@@ -1,6 +1,6 @@
 import ora, { Ora } from 'ora';
 import logUpdate from 'log-update';
-import logSymbols from 'log-symbols';
+import figures from 'figures';
 import chalk from 'chalk';
 
 enum ProcessState {
@@ -83,9 +83,9 @@ export class ProcessList {
         .map((process: Process) => {
           let symbol: string;
           if (process.state === ProcessState.FINISHED) {
-            symbol = chalk.green(logSymbols.success) + ' ';
+            symbol = chalk.green(figures.tick) + ' ';
           } else if (process.state === ProcessState.SKIPPED) {
-            symbol = chalk.yellow(logSymbols.success);
+            symbol = chalk.yellow(figures.play) + ' ';
           } else {
             symbol = chalk.blue(spinner);
           }

@@ -20,7 +20,6 @@ export class ProgressLog {
       // Read config
       const content = await fse.readFile(this.path, 'utf-8');
       const lines = content.split(/\r\n|\r|\n/);
-
       const statusLines = lines.filter(
         (candidate: string) => candidate.substr(0, ProgressLog.STATUS_PREFIX.length) === ProgressLog.STATUS_PREFIX,
       );

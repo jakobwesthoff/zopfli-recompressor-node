@@ -38,6 +38,8 @@ export class Recompressor {
   public async run(): Promise<void> {
     this.processList.start();
 
+    await this.progressLog.init();
+
     const files = await this.gatherFiles();
     await this.recompressFiles(files);
 
