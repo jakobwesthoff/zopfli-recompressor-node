@@ -12,12 +12,10 @@
     },
     "plugins": [
         "@typescript-eslint",
-        "jasmine",
         "prettier"
     ],
     "extends": [
         "plugin:@typescript-eslint/recommended",
-        "plugin:jasmine/recommended",
         "plugin:prettier/recommended"
     ],
     "rules": {
@@ -77,13 +75,6 @@
         ],
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-inferrable-types": "off",
-        "@typescript-eslint/no-empty-interface": "off",
-
-        "jasmine/no-unsafe-spy": "off",
-        "jasmine/no-spec-dupes": "off",
-        "jasmine/new-line-before-expect": "off",
-        "jasmine/new-line-between-declarations": "off",
-        "jasmine/prefer-toHaveBeenCalledWith": "off",
-        "jasmine/no-promise-without-done-fail": "off"
+        "@typescript-eslint/no-empty-interface": "off"
     }
 }
