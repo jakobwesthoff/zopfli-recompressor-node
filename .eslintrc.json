@@ -1,0 +1,89 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "tsconfig.json",
+        "sourceType": "module",
+        "tsconfigRootDir": "./"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "jasmine",
+        "prettier"
+    ],
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:jasmine/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "rules": {
+        "prettier/prettier": "error",
+        "@typescript-eslint/camelcase": [
+            "error",
+            {
+                "properties": "never",
+                "ignoreDestructuring": true
+            }
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ],
+        "arrow-body-style": [
+            "error",
+            "as-needed"
+        ],
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 1
+            }
+        ],
+        "arrow-parens": [
+            "error",
+            "always"
+        ],
+        "curly": [
+            "error"
+        ],
+        "no-trailing-spaces": [
+            "error"
+        ],
+        "comma-dangle": [
+            "error",
+            "only-multiline"
+        ],
+
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ],
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+
+        "jasmine/no-unsafe-spy": "off",
+        "jasmine/no-spec-dupes": "off",
+        "jasmine/new-line-before-expect": "off",
+        "jasmine/new-line-between-declarations": "off",
+        "jasmine/prefer-toHaveBeenCalledWith": "off",
+        "jasmine/no-promise-without-done-fail": "off"
+    }
+}
