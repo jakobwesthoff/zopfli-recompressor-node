@@ -53,7 +53,10 @@ export class Recompressor {
 
   private async gatherFiles(): Promise<string[]> {
     this.processList.add('file-list', 'Gathering files to process...');
-    const files = (await glob(`**/*.${this.options.extension}`, { cwd: this.path })).map(
+
+    const crossPlatformPath = this.path.replace('\\', '/');
+
+    const files = (await glob(`**/*.${this.options.extension}`, { cwd: crossPlatformPath })).map(
       (file) => `${this.path}/${file}`,
     );
     this.processList.update('file-list', `Found ${files.length} archives to recompress.`);
@@ -95,8 +98,12 @@ export class Recompressor {
   private buildAdvZipCommandline(file: string): { command: string; args: string[] } {
     return {
       command: this.options.advzip,
-      args: ['--recompress', '-4', `--iter=${this.options.iterations}`, file],
+      args: ['--recompress', '-4', `--iter=${this.options.iterations}`, this.fixFilePathForPlatform(file)],
     };
+  }
+
+  private fixFilePathForPlatform(file: string): string {
+    return file.replace('/', path.sep);
   }
 
   private cleanup(_code: number | null, _signal: string | null): void {
