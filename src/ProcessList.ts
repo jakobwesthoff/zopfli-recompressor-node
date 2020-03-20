@@ -2,11 +2,14 @@ import ora, { Ora } from 'ora';
 import logUpdate from 'log-update';
 import figures from 'figures';
 import chalk from 'chalk';
+import * as uuid from 'uuid';
 
 enum ProcessState {
   RUNNING,
   FINISHED,
   SKIPPED,
+  ERROR,
+  INFO,
 }
 
 interface Process {
@@ -32,6 +35,14 @@ export class ProcessList {
     this.processes.push({ id, text, state: ProcessState.RUNNING });
   }
 
+  public logInfo(text: string): void {
+    console.log(this.renderProcess({ id: uuid.v4(), text, state: ProcessState.INFO }, ''));
+  }
+
+  public logError(text: string): void {
+    console.log(this.renderProcess({ id: uuid.v4(), text, state: ProcessState.ERROR }, ''));
+  }
+
   public finish(id: string): void {
     const matches = this.processes.filter((candidate) => candidate.id === id);
     for (const match of matches) {
@@ -43,6 +54,20 @@ export class ProcessList {
     const matches = this.processes.filter((candidate) => candidate.id === id);
     for (const match of matches) {
       match.state = ProcessState.SKIPPED;
+    }
+  }
+
+  public error(id: string): void {
+    const matches = this.processes.filter((candidate) => candidate.id === id);
+    for (const match of matches) {
+      match.state = ProcessState.ERROR;
+    }
+  }
+
+  public info(id: string): void {
+    const matches = this.processes.filter((candidate) => candidate.id === id);
+    for (const match of matches) {
+      match.state = ProcessState.INFO;
     }
   }
 
@@ -58,8 +83,8 @@ export class ProcessList {
   }
 
   public stop(): void {
+    this.render();
     if (this.runningTimeout) {
-      this.render();
       clearTimeout(this.runningTimeout);
       this.runningTimeout = undefined;
     }
@@ -78,21 +103,23 @@ export class ProcessList {
   }
 
   private renderProcesses(processes: Process[], spinner: string): void {
-    logUpdate(
-      processes
-        .map((process: Process) => {
-          let symbol: string;
-          if (process.state === ProcessState.FINISHED) {
-            symbol = chalk.green(figures.tick) + ' ';
-          } else if (process.state === ProcessState.SKIPPED) {
-            symbol = chalk.yellow(figures.play) + ' ';
-          } else {
-            symbol = chalk.blue(spinner);
-          }
-          return `${symbol}${process.text}`;
-        })
-        .join('\n'),
-    );
+    logUpdate(processes.map((process: Process) => this.renderProcess(process, spinner)).join('\n'));
+  }
+
+  private renderProcess(process: Process, spinner: string): string {
+    let symbol: string;
+    if (process.state === ProcessState.FINISHED) {
+      symbol = chalk.green(figures.tick) + ' ';
+    } else if (process.state === ProcessState.SKIPPED) {
+      symbol = chalk.yellow(figures.play) + ' ';
+    } else if (process.state === ProcessState.ERROR) {
+      symbol = chalk.red(figures.cross) + ' ';
+    } else if (process.state === ProcessState.INFO) {
+      symbol = chalk.blue(figures.info) + ' ';
+    } else {
+      symbol = chalk.cyan(spinner);
+    }
+    return `${symbol}${process.text}`;
   }
 
   private isolateFinishedInRow(): Process[] {

@@ -5,6 +5,7 @@ import path from 'path';
 import { ProcessList } from './ProcessList';
 import { padToLength } from './stringFormat';
 import { ProgressLog } from './ProgressLog';
+import nodeCleanup from 'node-cleanup';
 
 export interface ProcessorOptions {
   extension: string;
@@ -23,6 +24,8 @@ export class Recompressor {
 
   private options: ProcessorOptions;
 
+  private encounteredErrors: string[] = [];
+
   constructor(
     private processList: ProcessList,
     private progressLog: ProgressLog,
@@ -37,6 +40,8 @@ export class Recompressor {
 
   public async run(): Promise<void> {
     this.processList.start();
+
+    nodeCleanup((code, signal) => this.cleanup(code, signal));
 
     await this.progressLog.init();
 
@@ -72,9 +77,18 @@ export class Recompressor {
       }
 
       const { command, args } = this.buildAdvZipCommandline(file);
-      const { stdout } = await execa(command, args);
-      await this.progressLog.finished(file, stdout);
-      this.processList.finish(file);
+      try {
+        const { stdout } = await execa(command, args);
+        await this.progressLog.finished(file, stdout);
+        this.processList.finish(file);
+      } catch (error) {
+        const indentedError = error.stderr
+          .split(/\r\n|\r|\n/)
+          .map((line: string) => `  ${line}`)
+          .join('\n');
+        this.encounteredErrors.push(`${file}:\n${indentedError}`);
+        this.processList.error(file);
+      }
     });
   }
 
@@ -83,5 +97,20 @@ export class Recompressor {
       command: this.options.advzip,
       args: ['--recompress', '-4', `--iter=${this.options.iterations}`, file],
     };
+  }
+
+  private cleanup(_code: number | null, _signal: string | null): void {
+    this.processList.stop();
+
+    this.processList.logInfo('Finishing up...');
+
+    if (this.encounteredErrors.length > 0) {
+      this.processList.logInfo('The following errors were encountered during the recompression run:');
+      for (let i = 0; i < this.encounteredErrors.length; i++) {
+        const error = this.encounteredErrors[i];
+        this.processList.logError(error);
+      }
+      this.processList.logInfo('Everything else was processed sucessfully!');
+    }
   }
 }
