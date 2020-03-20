@@ -9,9 +9,10 @@
     "clean": "rimraf 'dist/**/*'; rimraf 'bin/**/*'",
     "build": "npm-run-all build:typescript -s build:linux build:windows build:macos",
     "build:typescript": "tsc -p tsconfig.json",
-    "build:linux": "nexe 'dist/bin/zopfli-recompress.js' -o 'bin/zopfli-recompress-linux' -t 'static-x86-12.9.1'",
-    "build:windows": "nexe 'dist/bin/zopfli-recompress.js' -o 'bin/zopfli-recompress-windows' -t 'windows-x64-12.13.1'",
-    "build:macos": "nexe 'dist/bin/zopfli-recompress.js' -o 'bin/zopfli-recompress-macos' -t 'mac-x64-12.13.1'"
+    "build:linux": "nexe 'dist/bin/zopfli-recompress.js' -o 'bin/zopfli-recompress-linux' -t 'static-x86-12.9.1' --resource package.json",
+    "build:windows": "nexe 'dist/bin/zopfli-recompress.js' -o 'bin/zopfli-recompress-windows' -t 'windows-x64-12.13.1' --resource package.json",
+    "build:macos": "nexe 'dist/bin/zopfli-recompress.js' -o 'bin/zopfli-recompress-macos' -t 'mac-x64-12.13.1' --resource package.json",
+    "release": "share/bin/create-release.sh"
   },
   "keywords": [
     "zopfli",

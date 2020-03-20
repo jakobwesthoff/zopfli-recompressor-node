@@ -9,6 +9,7 @@
 
 # Binaries
 bin/*
+release/*
 
 # Logs
 *.log

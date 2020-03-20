@@ -3,9 +3,8 @@ import { Recompressor } from '../Recompressor';
 import meow from 'meow';
 import os from 'os';
 import { ProgressLog } from '../ProgressLog';
-
-const cleanedArgv = process.argv.slice();
-cleanedArgv.splice(2, 1);
+import * as fse from 'fs-extra';
+import * as path from 'path';
 
 const cli = meow(
   `
@@ -50,11 +49,11 @@ const cli = meow(
     },
     autoHelp: true,
     autoVersion: true,
-    argv: cleanedArgv,
+    pkg: JSON.parse(fse.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf8')),
   },
 );
 
-if (cli.input.length !== 3) {
+if (cli.input.length !== 1) {
   cli.showHelp();
   process.exit(1);
 }
@@ -62,7 +61,7 @@ if (cli.input.length !== 3) {
 (async () => {
   const processList = new ProcessList();
   const progressLog = new ProgressLog(cli.flags.log);
-  const recompressor = new Recompressor(processList, progressLog, cli.input[2], { ...cli.flags });
+  const recompressor = new Recompressor(processList, progressLog, cli.input[0], { ...cli.flags });
 
   await recompressor.run();
 })();
