@@ -10,6 +10,7 @@
 # Binaries
 bin/*
 release/*
+dist/*
 
 # Logs
 *.log
