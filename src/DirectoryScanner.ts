@@ -45,7 +45,6 @@ export class DirectoryScanner {
 
   public async glob(path: string, pattern: string, mode: ScanMode = ScanMode.RECURSIVE): Promise<string[]> {
     const minimatchPattern = `${this.escapeGlobPatterns(path)}/${pattern}`;
-    console.log(minimatchPattern);
     const matcher = new Minimatch(minimatchPattern, { nocase: true, matchBase: false });
     return (await this.scan(path, mode)).filter((candidate: string) => matcher.match(candidate));
   }
