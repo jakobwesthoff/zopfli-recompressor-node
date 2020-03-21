@@ -1,11 +1,11 @@
 import async from 'async';
 import execa from 'execa';
-import glob from 'glob-promise';
-import path from 'path';
-import { ProcessList } from './ProcessList';
-import { padToLength } from './stringFormat';
-import { ProgressLog } from './ProgressLog';
 import nodeCleanup from 'node-cleanup';
+import path from 'path';
+import { DirectoryScanner, ScanMode } from './DirectoryScanner';
+import { ProcessList } from './ProcessList';
+import { ProgressLog } from './ProgressLog';
+import { padToLength } from './stringFormat';
 
 export interface ProcessorOptions {
   extension: string;
@@ -29,6 +29,7 @@ export class Recompressor {
   constructor(
     private processList: ProcessList,
     private progressLog: ProgressLog,
+    private scanner: DirectoryScanner,
     private path: string,
     options: ProcessorOptions = Recompressor.DEFAULT_OPTIONS,
   ) {
@@ -54,10 +55,12 @@ export class Recompressor {
   private async gatherFiles(): Promise<string[]> {
     this.processList.add('file-list', 'Gathering files to process...');
 
-    const crossPlatformPath = this.path.replace('\\', '/');
+    const crossPlatformPath = this.path.replace(/\\/g, '/');
 
-    const files = (await glob(`**/*.${this.options.extension}`, { cwd: crossPlatformPath })).map(
-      (file) => `${this.path}/${file}`,
+    const files = await this.scanner.glob(
+      crossPlatformPath,
+      `**/*.${this.scanner.escapeGlobPatterns(this.options.extension)}`,
+      ScanMode.RECURSIVE,
     );
     this.processList.update('file-list', `Found ${files.length} archives to recompress.`);
     this.processList.finish('file-list');

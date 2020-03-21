@@ -7,6 +7,7 @@ import * as fse from 'fs-extra';
 import * as path from 'path';
 import which from 'which';
 import { exists, isExecutable } from '../FileAccess';
+import { DirectoryScanner } from '../DirectoryScanner';
 
 const cli = meow(
   `
@@ -63,6 +64,7 @@ if (cli.input.length !== 1) {
 (async () => {
   const processList = new ProcessList();
   const progressLog = new ProgressLog(cli.flags.log);
+  const scanner = new DirectoryScanner();
 
   let advzip: string;
   if (cli.flags.advzip.match(/\/|\\/) === null) {
@@ -97,6 +99,6 @@ if (cli.input.length !== 1) {
     }
   }
 
-  const recompressor = new Recompressor(processList, progressLog, cli.input[0], { ...cli.flags, advzip });
+  const recompressor = new Recompressor(processList, progressLog, scanner, cli.input[0], { ...cli.flags, advzip });
   await recompressor.run();
 })();
